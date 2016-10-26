@@ -1,0 +1,17 @@
+ALL .cfg FILES SHOULD BE IN A DIRECTORY NAMED ./config/
+
+Note: This was developed and the algorithms work best if there are six (6) areas for people to clean,
+        and if there are six (6) users that will be assigned chores.
+        
+User information should be stored in users.cfg using JSON format:
+        {User1_name : {"email" : user1_email, "trash_day" : user1_trashday}, ...}
+
+Cleaning area information should be stored in areas.cfg using JSON format:
+        {Area1_name : [task1_desription, task2_description, ...], ...}
+
+Email account information should be stored in email.cfg using JSON format:
+        {"smtp_server" : SMTP_server_name, "smtp_port" : SMTP_port, "username" : account_username, 
+         "account_name" : email_account_name, "password" : account_password}
+        
+        Example: {"smtp_server" : "smtp.gmail.com", "smtp_port": 587, "username" : "fake_chores@gmail.com",
+         "account_name" : "CHORES!!", "password" : "fakeP4ssword"}

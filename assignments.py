@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Assigns chore areas to different people.
 # Assumes that the number of areas is equal to the number of people.
 
@@ -8,31 +10,63 @@
 import random
 import os
 from assignment_mailer import AssignmentMailer
+import json
+import datetime
 
 # The residents of the house
-people = ["Tyler", "Banjo", "Jessica", "Emily", "Laura", "Haley"]
+people = []
 
 # Where the last week's assignments are saved
-archive_location = "./last_week.chores"
+archive_location = "last_week.chores"
 
 # Where assignments are backed up
-backup_dir = "./backup/"
+backup_dir = "backup"
 
 # Areas of the house which need to be cleaned
-areas = {"Area 1" : ["Sweep and mop the kitchen floor", "Sweep and mop the front bathroom floor"],
-         "Area 2" : ["Sweep and mop the study floor", "Sweep and mop the back bathroom floor"],
-         "Area 3" : ["Sweep and mop the laundry room floor", "Wipe down the washer and dryer", "Wipe down the dining table"],
-         "Area 4" : ["Clean the kitchen counters", "Clean the kitchen sink", "Clean the insides and tops of appliances"],
-         "Area 5" : ["Sweep and swiffer the living room floor", "Vacuum the couches and futon"],
-         "Area 6" : ["Clean and dust all windows and blinds downstairs (including bathrooms)", "Dust the electronics", "Move the trash cans to the street on Sunday night"]}
+areas = {}
 
 # Each person has a day (except for trash day -- Monday) where they should take out the trash
-trash_days = {"Tyler" : "Sunday",
-              "Banjo" : "Thursday",
-              "Laura" : "Wednesday",
-              "Haley" : "Tuesday",
-              "Emily" : "Saturday",
-              "Jessica" : "Friday"}
+trash_days = {}
+
+# User configuration file
+USER_CONFIG = "config/users.cfg"
+
+# Area configuration file
+AREA_CONFIG = "config/areas.cfg"
+
+# Grabs user information from users.cfg including names, trash days
+def get_users():
+    f = open(USER_CONFIG, "r")
+
+    # Populates trash day dictionary with provided days and people list with provided users
+    try:
+        users = json.load(f)
+        for key in users.keys():
+            if key not in people:
+                people.append(key)
+            trash_days[key] = users[key]["trash_day"]
+    except:
+        print("Please check the README file for the correct user format.")
+        f.close()
+        exit()
+    finally:
+        f.close()
+
+# Grabs chore information from areas.cfg including area name and tasks
+def get_areas():
+    f = open(AREA_CONFIG, "r")
+
+    # Populates areas dictionary with areas provided in areas.cfg
+    try:
+        area = json.load(f)
+        for key in area.keys():
+            areas[key] = area[key]
+    except:
+        print("Please check the README file for the correct area format.")
+        f.close()
+        exit()
+    finally:
+        f.close()
 
 def generate_chores(_areas, _people):
     """Assign a random chore area to each person. Return a dictionary mapping people to areas."""
@@ -82,15 +116,41 @@ def archive_chores(_assignments):
     with open(archive_location, "w") as f:
         f.write(save)
 
+# Backs up the currently saved previous chores for inspection later if necessary
+def backup_chores():
+    # Check that the backup directory exists
+    if not os.path.isdir(backup_dir):
+        os.mkdir(backup_dir)
+    # Create the name of the backup file. YYYY-MM-DD.chores
+    today = datetime.datetime.today()
+    backup = "-".join([str(today.year), str(today.month), str(today.day)]) + ".chores"
+    # Open the current archive to copy to the backup location
+    w = open(os.path.join(backup_dir, backup), "w")
+    try:
+        r = open(archive_location, "r")
+    except:
+        # If the archive doesn't exist, just make an empty one
+        open(archive_location, "w").close()
+        r = open(archive_location, "r")
+    # Copy copy copy
+    for line in r:
+        w.write(line)
+    w.close()
+    r.close()
     
 # When called, generates assignments for chores, verifies them, then saves them to an archive file.
 # Then uses assignment sender to email out assignments.
 def main():
+    # Get user and area info
+    get_users()
+    get_areas()
     # Generate assignments
     chore_assignments = generate_chores(areas, people)
     # Make sure they're not repeats
     while(not verify_assignments(chore_assignments)):
         chore_assignments = generate_chores(areas, people)
+    # Backup previous assignments
+    backup_chores()
     # Save these assignments
     archive_chores(chore_assignments)
 

@@ -52,3 +52,6 @@ Temporary Items
 *.bak
 *.pyc
 .vscode/
+*.bat
+backup/
+config/
