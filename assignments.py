@@ -7,11 +7,13 @@
 # tsmith328@gatech.edu
 # September 2016
 
-import random
-import os
-from assignment_mailer import AssignmentMailer
-import json
 import datetime
+import json
+import os
+import random
+
+from assignment_mailer import AssignmentMailer
+from chores_bot import postChores
 
 # The residents of the house
 people = []
@@ -158,6 +160,9 @@ def main():
     # Use AssignmentMailer to distribute
     mailer = AssignmentMailer(chore_assignments, areas, trash_days)
     mailer.send()
+
+    # Then, post to GroupMe
+    postChores(chore_assignments)
 
 if __name__ == "__main__":
     main()

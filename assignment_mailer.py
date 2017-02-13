@@ -42,10 +42,6 @@ class AssignmentMailer(object):
 
 # Sends an email using GMail's SMTP server
 def send_email(recipient, subject, body):
-    print recipient
-    print subject
-    print body
-    return
     # Can't send to no one!
     if len(recipient) == 0:
         return
