@@ -1,4 +1,8 @@
-#! usr/bin/env python
+# Posts a message to GroupMe using the website's REST API
+
+# Written by: Tyler Smith
+# tsmith328@gatech.edu
+# February 2017
 
 import json
 import requests
@@ -12,6 +16,7 @@ bot_id = ""
 # Bot config file
 BOT_CONFIG = 'config/bot.cfg'
 
+# Initialize the bot and post the chore assignments found in chores to GroupMe
 def postChores(chores):
     init()
     payload = {}
@@ -19,7 +24,8 @@ def postChores(chores):
     payload['text'] = '\n'.join(["%s: %s" % (k,v) for k,v in chores.items()])
     requests.post(api, json=payload)
 
-def init():
+# Initialize using configuration file found at BOT_CONFIG
+def _init():
     global api
     global bot_id
     f = open(BOT_CONFIG, 'r')

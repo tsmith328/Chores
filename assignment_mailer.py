@@ -1,3 +1,9 @@
+# Sends emails containing chore assignments
+
+# Written by: Tyler Smith
+# tsmith328@gatech.edu
+# September 2016
+
 import smtplib
 from email.mime.text import MIMEText
 import datetime

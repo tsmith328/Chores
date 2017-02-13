@@ -15,3 +15,6 @@ Email account information should be stored in email.cfg using JSON format:
         
         Example: {"smtp_server" : "smtp.gmail.com", "smtp_port": 587, "username" : "fake_chores@gmail.com",
          "account_name" : "CHORES!!", "password" : "fakeP4ssword"}
+
+Bot was written to interface with GroupMe's API. Bot information should be stored in bot.cfg using JSON format:
+        {"bot_id" : bot_unique_id, "api_url" : URL_for_API_access}
