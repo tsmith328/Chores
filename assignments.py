@@ -164,5 +164,25 @@ def main():
     # Then, post to GroupMe
     postChores(chore_assignments)
 
+# Reads current chore assignments and resends them to the specified people (if any)
+# Good for testing user email addresses without reassigning chores
+def resend(*args):
+    # Get user and area info
+    get_users()
+    get_areas()
+    
+    chore_assignments = {}
+    #Read assignments
+    with open(archive_location) as f:
+        for line in f:
+            person, area = line.split(":")
+            person = person.strip()
+            area = area.strip()
+            if len(args) == 0 or person in args: # Allow for calling without arguments to send to all users
+                chore_assignments[person] = area
+    # Send assignments to everyone
+    mailer = AssignmentMailer(chore_assignments, areas, trash_days)
+    mailer.send()
+
 if __name__ == "__main__":
     main()
