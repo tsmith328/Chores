@@ -173,7 +173,7 @@ def resend(*args):
     
     chore_assignments = {}
     #Read assignments
-    with open(archive_location) as f:
+    with open(archive_location, "r") as f:
         for line in f:
             person, area = line.split(":")
             person = person.strip()

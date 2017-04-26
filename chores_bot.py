@@ -18,7 +18,7 @@ BOT_CONFIG = 'config/bot.cfg'
 
 # Initialize the bot and post the chore assignments found in chores to GroupMe
 def postChores(chores):
-    init()
+    _init()
     payload = {}
     payload['bot_id'] = bot_id
     payload['text'] = '\n'.join(["%s: %s" % (k,v) for k,v in chores.items()])
